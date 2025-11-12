@@ -7,6 +7,7 @@ window.addEventListener('scroll', () => {
     const navLinks = document.querySelectorAll('.x-anchor-menu-item .x-anchor-text-primary'); 
     const navParticles = document.querySelectorAll('.is-primary'); 
     const navCTA = document.querySelector('.m2r-t')
+    const navCTAText = document.querySelector('.x-anchor-button .x-anchor-text-primary');
 
     const scrolled = window.scrollY; 
 
@@ -46,6 +47,10 @@ window.addEventListener('scroll', () => {
         particle.style.setProperty('transition', 'color 0.3s ease', 'important');
     }); 
 
+    if (navCTA) {
+        navCTA.style.setProperty('transition', 'border-color 0.3s ease, color.03s ease');
+    }
+
     const isScrolled = scrolled > triggerPx;
     
     // only change logo if the scroll state has changed 
@@ -58,15 +63,30 @@ window.addEventListener('scroll', () => {
         setTimeout(() => {
             logoImg.src = 'https://sunserve.org/wp-content/uploads/2025/10/sunserve-logo.svg'; 
             logoImg.style.opacity = '1';
-        }, 200)
+        }, 200);
 
         navLinks.forEach(link => {
             link.style.color = '#000000';
-        })
+        });
 
         navParticles.forEach(particle => {
             particle.style.color = '#000000';
-        })
+        });
+
+        if (navCTA && !navCTA.dataset.scrollHoverAdded) {
+            navCTA.dataset.scrollHoverAdded = 'true';
+
+            navCTA.addEventListener('mouseenter', () => {
+                navCTA.style.setProperty('border-color', '#000000', 'important');
+                navCTAText.style.setProperty('color', '#000000', 'important');
+            }); 
+
+            navCTA.addEventListener('mouseleave', () => {
+                navCTA.style.setProperty('border-color', '', 'important');
+                navCTAText.style.setProperty('color', '', 'important');
+            });
+        }
+
     } else if (!isScrolled && lastScrollState !== 'top') {
         lastScrollState = 'top';
 
@@ -85,5 +105,19 @@ window.addEventListener('scroll', () => {
         navParticles.forEach(particle => {
             particle.style.color = '#ffffff';
         });
+
+        if (navCTA && !navCTA.dataset.topHoverAdded) {
+            navCTA.dataset.topHoverAdded = 'true';
+
+            navCTA.addEventListener('mouseenter', () => {
+                navCTA.style.setProperty('border-color', '#ffffff', 'important');
+                navCTAText.style.setProperty('color', '#ffffff', 'important');
+            }); 
+
+            navCTA.addEventListener('mouseleave', () => {
+                navCTA.style.setProperty('border-color', '', 'important');
+                navCTAText.style.setProperty('color', '', 'important');
+            });
+        };
     };
 });
