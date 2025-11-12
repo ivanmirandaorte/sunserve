@@ -1,4 +1,6 @@
 let lastScrollState = null;
+let scrollHoverHandler = null;
+let topHoverAdded = null;
 
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.navbar'); 
@@ -73,18 +75,30 @@ window.addEventListener('scroll', () => {
             particle.style.color = '#000000';
         });
 
-        if (navCTA && !navCTA.dataset.scrollHoverAdded) {
-            navCTA.dataset.scrollHoverAdded = 'true';
+        if (navCTA && topHoverAdded) {
+            navCTA.removeEventListener('mouseenter', topHoverAdded.enter); 
+            navCTA.removeEventListener('mouseleave', topHoverAdded.leave);
+            topHoverAdded = null;
+        }
 
-            navCTA.addEventListener('mouseenter', () => {
+        if (navCTA && !scrollHoverHandler) {
+            const enterHandler = () => {
                 navCTA.style.setProperty('border-color', '#000000', 'important');
                 navCTAText.style.setProperty('color', '#000000', 'important');
-            }); 
+            }
 
-            navCTA.addEventListener('mouseleave', () => {
-                navCTA.style.setProperty('border-color', '', 'important');
+            const leaveHandler = () => {
+                navCTA.style.setProperty('border-color', '', 'important');s
                 navCTAText.style.setProperty('color', '', 'important');
-            });
+            }
+
+            navCTA.addEventListener('mouseenter', enterHandler); 
+            navCTA.addEventListener('mouseleave', leaveHandler);
+
+            scrollHoverHandler = {
+                enter: enterHandler,
+                leave: leaveHandler
+            };
         }
 
     } else if (!isScrolled && lastScrollState !== 'top') {
@@ -106,18 +120,30 @@ window.addEventListener('scroll', () => {
             particle.style.color = '#ffffff';
         });
 
-        if (navCTA && !navCTA.dataset.topHoverAdded) {
-            navCTA.dataset.topHoverAdded = 'true';
+        if (navCTA && scrollHoverHandler) {
+            navCTA.removeEventListener('mouseenter', scrollHoverHandler.enter); 
+            navCTA.removeEventListener('mouseleave', scrollHoverHandler.leave);
+            scrollHoverHandler = null;
+        }
 
-            navCTA.addEventListener('mouseenter', () => {
+        if (navCTA && !topHoverAdded) {
+            const enterHandler = () => {
                 navCTA.style.setProperty('border-color', '#ffffff', 'important');
                 navCTAText.style.setProperty('color', '#ffffff', 'important');
-            }); 
+            }
 
-            navCTA.addEventListener('mouseleave', () => {
+            const leaveHandler = () => {
                 navCTA.style.setProperty('border-color', '', 'important');
                 navCTAText.style.setProperty('color', '', 'important');
-            });
-        };
+            }
+
+            navCTA.addEventListener('mouseenter', enterHandler); 
+            navCTA.addEventListener('mouseleave', leaveHandler);
+
+            topHoverAdded = {
+                enter: enterHandler,
+                leave: leaveHandler
+            };
+        }
     };
 });
