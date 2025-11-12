@@ -1,0 +1,89 @@
+let lastScrollState = null;
+
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.navbar'); 
+    const logo = document.querySelector('.logo');
+    const logoImg = document.querySelector('.logo > span > img');
+    const navLinks = document.querySelectorAll('.x-anchor-menu-item .x-anchor-text-primary'); 
+    const navParticles = document.querySelectorAll('.is-primary'); 
+    const navCTA = document.querySelector('.m2r-t')
+
+    const scrolled = window.scrollY; 
+
+    const maxScroll = 200; 
+    const minScale = 0.7; 
+    const triggerPx = 10; 
+    const scale = Math.max(minScale, 1 - (scrolled / maxScroll) * (1 - minScale));
+
+    // fixed dimensions to prevent layout shift
+    if (!logo.style.width) {
+        const currentWidth = logo.offsetWidth;
+        const currentHeight = logo.offsetHeight; 
+        logo.style.width = currentWidth + 'px';
+        logo.style.height = currentHeight + 'px';
+    }
+
+    // smooth transitions 
+    nav.style.transition = 'background-color 0.3s ease'; 
+    logo.style.transition = 'transform 0.3s ease, width 0.3s ease, height 0.3s ease'; 
+    logoImg.style.transition = 'opacity 0.2s ease'; 
+
+    // force image to fill container 
+    logoImg.style.width = '100%';
+    logoImg.style.height = '100%';
+    logoImg.style.objectFit = 'contain';
+
+    // transform orign to left side before scaling 
+    logo.style.transformOrigin = 'left center';
+    logo.style.transform = `scale(${scale})`;
+
+    // add transition to nav links and particles with !important ** 
+    navLinks.forEach(link => {
+        link.style.setProperty('transition', 'color 0.3s ease', 'important');
+    }); 
+
+    navParticles.forEach(particle => {
+        particle.style.setProperty('transition', 'color 0.3s ease', 'important');
+    }); 
+
+    const isScrolled = scrolled > triggerPx;
+    
+    // only change logo if the scroll state has changed 
+    if (isScrolled && lastScrollState !== 'scrolled') {
+        lastScrollState = 'scrolled';
+
+        nav.style.backgroundColor = '#ffffff'; 
+
+        logoImg.style.opacity = '0'; 
+        setTimeout(() => {
+            logoImg.src = 'https://sunserve.org/wp-content/uploads/2025/10/sunserve-logo.svg'; 
+            logoImg.style.opacity = '1';
+        }, 200)
+
+        navLinks.forEach(link => {
+            link.style.color = '#000000';
+        })
+
+        navParticles.forEach(particle => {
+            particle.style.color = '#000000';
+        })
+    } else if (!isScrolled && lastScrollState !== 'top') {
+        lastScrollState = 'top';
+
+        nav.style.backgroundColor = 'transparent';
+        
+        logoImg.style.opacity = '0';
+        setTimeout(() => {
+            logoImg.src = 'https://sunserve.org/wp-content/uploads/2025/09/sunserve_logo_white.svg'; 
+            logoImg.style.opacity = '1';
+        }, 200)
+
+        navLinks.forEach(link => {
+            link.style.color = '#ffffff';
+        })
+
+        navParticles.forEach(particle => {
+            particle.style.color = '#ffffff';
+        });
+    };
+});
